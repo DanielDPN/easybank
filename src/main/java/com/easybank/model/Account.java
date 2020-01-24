@@ -25,6 +25,10 @@ public class Account {
     public Account() {
     }
 
+    public Account(Long id) {
+        this.id = id;
+    }
+
     public Account(Agency agency, String number, String digit, BigDecimal balance) {
         super();
         this.agency = agency;
