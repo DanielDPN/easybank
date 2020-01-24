@@ -12,7 +12,9 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -64,7 +66,7 @@ public class AccountController {
     }
 
     @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
-    @PutMapping()
+    @PutMapping("/deposit")
     public ResponseEntity<Map<String, Object>> deposit(@RequestBody Deposit deposit) {
         Account account;
         final Map<String, Object> result = new HashMap<>();
@@ -86,7 +88,7 @@ public class AccountController {
     }
 
     @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
-    @PutMapping()
+    @PutMapping("/withdraw")
     public ResponseEntity<Map<String, Object>> withdraw(@RequestBody Withdraw withdraw) {
         Account account;
         final Map<String, Object> result = new HashMap<>();
@@ -112,7 +114,7 @@ public class AccountController {
     }
 
     @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
-    @PutMapping()
+    @PutMapping("/transfer")
     public ResponseEntity<Map<String, Object>> transfer(@RequestBody Transfer transfer) {
         Account destination = transfer.getDestination();
         final Map<String, Object> result = new HashMap<>();
@@ -137,6 +139,24 @@ public class AccountController {
         } catch (Exception e) {
             result.put("success", false);
             result.put("error", "Não foi possível efetuar transferência");
+            result.put("body", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+        }
+    }
+
+    @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
+    @GetMapping("/extract")
+    public ResponseEntity<Map<String, Object>> extract(@RequestParam Long id) {
+        final Map<String, Object> result = new HashMap<>();
+        try {
+            Account account = accountRepository.getOne(id);
+            result.put("success", true);
+            result.put("error", null);
+            result.put("body", movementRepository.findAllByOriginEqualsOrDestinationEquals(account, account));
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", "Não foi possível buscar extrato");
             result.put("body", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
