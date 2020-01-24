@@ -21,19 +21,16 @@ public class Account {
     private String number;
     private String digit;
     private BigDecimal balance;
-    @OneToOne(fetch = FetchType.EAGER)
-    private Client client;
 
     public Account() {
     }
 
-    public Account(Agency agency, String number, String digit, BigDecimal balance, Client client) {
+    public Account(Agency agency, String number, String digit, BigDecimal balance) {
         super();
         this.agency = agency;
         this.number = number;
         this.digit = digit;
         this.balance = balance;
-        this.client = client;
     }
 
     public Long getId() {
@@ -74,14 +71,6 @@ public class Account {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
     }
 
 }

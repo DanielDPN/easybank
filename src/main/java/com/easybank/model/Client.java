@@ -13,6 +13,9 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "account_id")
+    private Account account;
     private String name;
     @Column(name = "federal_registration", unique = true)
     private String federalRegistration;

@@ -29,13 +29,6 @@ public class AgencyController {
         return new ResponseEntity<>(agency, HttpStatus.OK);
     }
 
-    @Secured({Const.ROLE_MANAGER})
-    @PutMapping()
-    public ResponseEntity<Agency> edit(@RequestBody Agency agency){
-        agency = this.agencyRepository.save(agency);
-        return new ResponseEntity<>(agency, HttpStatus.OK);
-    }
-
     @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
     @GetMapping()
     public ResponseEntity<List<Agency>> list(){

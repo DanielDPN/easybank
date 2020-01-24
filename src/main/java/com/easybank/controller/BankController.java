@@ -29,13 +29,6 @@ public class BankController {
         return new ResponseEntity<>(bank, HttpStatus.OK);
     }
 
-    @Secured({Const.ROLE_MANAGER})
-    @PutMapping()
-    public ResponseEntity<Bank> edit(@RequestBody Bank bank){
-        bank = this.bankRepository.save(bank);
-        return new ResponseEntity<>(bank, HttpStatus.OK);
-    }
-
     @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
     @GetMapping()
     public ResponseEntity<List<Bank>> list(){
