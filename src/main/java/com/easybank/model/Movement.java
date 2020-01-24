@@ -23,20 +23,16 @@ public class Movement {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "destination_id")
     private Account destination;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "client_id")
-    private Client client;
 
     public Movement() {
     }
 
-    public Movement(MovementType type, BigDecimal amount, Account origin, Account destination, Client client) {
+    public Movement(MovementType type, BigDecimal amount, Account origin, Account destination) {
         super();
         this.type = type;
         this.amount = amount;
         this.origin = origin;
         this.destination = destination;
-        this.client = client;
     }
 
     public Long getId() {
@@ -77,14 +73,6 @@ public class Movement {
 
     public void setDestination(Account destination) {
         this.destination = destination;
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
     }
 
 }
