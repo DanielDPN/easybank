@@ -13,6 +13,9 @@ public class Agency {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "bank_id")
+    private Bank bank;
     @Column(unique = true)
     private String number;
     private String digit;
@@ -20,8 +23,9 @@ public class Agency {
     public Agency() {
     }
 
-    public Agency(String number, String digit) {
+    public Agency(Bank bank, String number, String digit) {
         super();
+        this.bank = bank;
         this.number = number;
         this.digit = digit;
     }
@@ -32,6 +36,14 @@ public class Agency {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Bank getBank() {
+        return bank;
+    }
+
+    public void setBank(Bank bank) {
+        this.bank = bank;
     }
 
     public String getNumber() {
