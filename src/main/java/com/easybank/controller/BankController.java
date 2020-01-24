@@ -9,7 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/bank")
@@ -24,15 +25,37 @@ public class BankController {
 
     @Secured({Const.ROLE_MANAGER})
     @PostMapping()
-    public ResponseEntity<Bank> save(@RequestBody Bank bank){
-        bank = this.bankRepository.save(bank);
-        return new ResponseEntity<>(bank, HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> save(@RequestBody Bank bank){
+        final Map<String, Object> result = new HashMap<>();
+        try {
+            bank = this.bankRepository.save(bank);
+            result.put("success", true);
+            result.put("error", null);
+            result.put("body", bank);
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", "Não foi possível criar banco");
+            result.put("body", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+        }
     }
 
     @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
     @GetMapping()
-    public ResponseEntity<List<Bank>> list(){
-        return new ResponseEntity<>(bankRepository.findAll(), HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> list(){
+        final Map<String, Object> result = new HashMap<>();
+        try {
+            result.put("success", true);
+            result.put("error", null);
+            result.put("body", bankRepository.findAll());
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", "Não foi possível listar bancos");
+            result.put("body", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+        }
     }
 
 }

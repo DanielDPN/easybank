@@ -9,7 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/agency")
@@ -24,15 +25,37 @@ public class AgencyController {
 
     @Secured({Const.ROLE_MANAGER})
     @PostMapping()
-    public ResponseEntity<Agency> save(@RequestBody Agency agency){
-        agency = this.agencyRepository.save(agency);
-        return new ResponseEntity<>(agency, HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> save(@RequestBody Agency agency){
+        final Map<String, Object> result = new HashMap<>();
+        try {
+            agency = this.agencyRepository.save(agency);
+            result.put("success", true);
+            result.put("error", null);
+            result.put("body", agency);
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", "Não foi possível criar agência");
+            result.put("body", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+        }
     }
 
     @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
     @GetMapping()
-    public ResponseEntity<List<Agency>> list(){
-        return new ResponseEntity<>(agencyRepository.findAll(), HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> list(){
+        final Map<String, Object> result = new HashMap<>();
+        try {
+            result.put("success", true);
+            result.put("error", null);
+            result.put("body", agencyRepository.findAll());
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", "Não foi possível listar agências");
+            result.put("body", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+        }
     }
 
 }
