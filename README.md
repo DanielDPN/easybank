@@ -3,6 +3,8 @@ API Restful genérica para serviços bancários.
 
 Todas as solicitações para a API requerem o uso de uma chave de acesso.
 
+### Utilizando o Postman ou outra ferramenta para executar as requisições.
+
 ## Authorization
 
 ```http

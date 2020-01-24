@@ -1,6 +1,6 @@
-package com.easybank.enums;
+package com.easybank;
 
-public class Role {
+public class Const {
     public static final String ROLE_MANAGER = "ROLE_MANAGER";
     public static final String ROLE_CLIENT = "ROLE_CLIENT";
 }

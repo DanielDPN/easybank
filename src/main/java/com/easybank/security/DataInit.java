@@ -1,6 +1,6 @@
 package com.easybank.security;
 
-import com.easybank.enums.Role;
+import com.easybank.Const;
 import com.easybank.model.User;
 import com.easybank.repository.RoleRepository;
 import com.easybank.repository.UserRepository;
@@ -33,8 +33,8 @@ public class DataInit implements ApplicationListener<ContextRefreshedEvent> {
     public void onApplicationEvent(ContextRefreshedEvent arg0) {
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) {
-            createUser("Manager", "manager", passwordEncoder.encode("manager"), Role.ROLE_MANAGER);
-            createUser("Client", "client", passwordEncoder.encode("client"), Role.ROLE_CLIENT);
+            createUser("Manager", "manager", passwordEncoder.encode("manager"), Const.ROLE_MANAGER);
+            createUser("Client", "client", passwordEncoder.encode("client"), Const.ROLE_CLIENT);
         }
     }
 
