@@ -2,7 +2,6 @@ package com.easybank.controller;
 
 import com.easybank.Const;
 import com.easybank.model.Account;
-import com.easybank.model.Bank;
 import com.easybank.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

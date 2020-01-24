@@ -79,10 +79,10 @@ public class ServerConfiguration {
             clients.inMemory()
                     .withClient("easy-bank")
                     .authorizedGrantTypes("password", "authorization_code", "refresh_token").scopes("all")
-                    .refreshTokenValiditySeconds(300000)
+                    .refreshTokenValiditySeconds(1800)
                     .resourceIds(RESOURCE_ID)
                     .secret(passwordEncoder.encode("easy-bank"))
-                    .accessTokenValiditySeconds(50000)
+                    .accessTokenValiditySeconds(1800)
             ;
 
         }
