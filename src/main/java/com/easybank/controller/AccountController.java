@@ -2,10 +2,7 @@ package com.easybank.controller;
 
 import com.easybank.Const;
 import com.easybank.enums.MovementType;
-import com.easybank.model.Account;
-import com.easybank.model.Deposit;
-import com.easybank.model.Movement;
-import com.easybank.model.Withdraw;
+import com.easybank.model.*;
 import com.easybank.repository.AccountRepository;
 import com.easybank.repository.MovementRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +106,37 @@ public class AccountController {
         } catch (Exception e) {
             result.put("success", false);
             result.put("error", "Não foi possível efetuar saque");
+            result.put("body", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+        }
+    }
+
+    @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
+    @PutMapping()
+    public ResponseEntity<Map<String, Object>> transfer(@RequestBody Transfer transfer) {
+        Account destination = transfer.getDestination();
+        final Map<String, Object> result = new HashMap<>();
+        try {
+            Account origin = accountRepository.getOne(transfer.getOrigin().getId());
+            if (origin.getBalance().compareTo(BigDecimal.ZERO) <= 0
+                    || origin.getBalance().compareTo(transfer.getAmount()) < 0) {
+                result.put("success", false);
+                result.put("error", "Saldo insuficiente para transferência");
+                result.put("body", null);
+                return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(result);
+            }
+            origin.setBalance(origin.getBalance().subtract(transfer.getAmount()));
+            destination.setBalance(destination.getBalance().add(transfer.getAmount()));
+            accountRepository.save(destination);
+            accountRepository.save(origin);
+            movementRepository.save(new Movement(MovementType.TRANSFER, transfer.getAmount(), origin, destination));
+            result.put("success", true);
+            result.put("error", null);
+            result.put("body", destination);
+            return ResponseEntity.status(HttpStatus.OK).body(result);
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("error", "Não foi possível efetuar transferência");
             result.put("body", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
         }
