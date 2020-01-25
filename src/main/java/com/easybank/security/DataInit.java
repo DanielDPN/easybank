@@ -34,7 +34,6 @@ public class DataInit implements ApplicationListener<ContextRefreshedEvent> {
         List<User> users = userRepository.findAll();
         if (users.isEmpty()) {
             createUser("Manager", "manager", passwordEncoder.encode("manager"), Const.ROLE_MANAGER);
-            createUser("Client", "client", passwordEncoder.encode("client"), Const.ROLE_CLIENT);
         }
     }
 

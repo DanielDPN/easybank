@@ -19,8 +19,8 @@ POST http://localhost:8080/oauth/token
 | Parameter | Type | Value |
 | :--- | :--- | :--- |
 | `grant_type` | `string` | **password** |
-| `username` | `string` | **manager** or **client** |
-| `password` | `string` | **manager** or **client** |
+| `username` | `string` | **manager** |
+| `password` | `string` | **manager** |
 
 ## Responses
 

@@ -21,17 +21,6 @@ public class ClientController {
     }
 
     @Secured({Const.ROLE_MANAGER})
-    @PostMapping()
-    public ResponseEntity save(@RequestBody Client client){
-        try {
-            client = this.clientRepository.save(client);
-            return ResponseEntity.status(HttpStatus.OK).body(client);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível criar cliente");
-        }
-    }
-
-    @Secured({Const.ROLE_MANAGER})
     @GetMapping()
     public ResponseEntity list(){
         try {

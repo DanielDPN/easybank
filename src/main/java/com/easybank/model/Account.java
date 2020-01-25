@@ -17,6 +17,9 @@ public class Account {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "agency_id")
     private Agency agency;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "client_id")
+    private Client client;
     @Column(unique = true)
     private String number;
     private String digit;
@@ -26,12 +29,14 @@ public class Account {
     }
 
     public Account(Long id) {
+        super();
         this.id = id;
     }
 
-    public Account(Agency agency, String number, String digit, BigDecimal balance) {
+    public Account(Agency agency, Client client, String number, String digit, BigDecimal balance) {
         super();
         this.agency = agency;
+        this.client = client;
         this.number = number;
         this.digit = digit;
         this.balance = balance;
@@ -51,6 +56,14 @@ public class Account {
 
     public void setAgency(Agency agency) {
         this.agency = agency;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public String getNumber() {

@@ -2,34 +2,60 @@ package com.easybank.controller;
 
 import com.easybank.enums.MovementType;
 import com.easybank.model.*;
-import com.easybank.repository.AccountRepository;
-import com.easybank.repository.MovementRepository;
+import com.easybank.repository.*;
 import com.easybank.util.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 
 @RestController
 @RequestMapping("/account")
 public class AccountController {
 
+    private final PasswordEncoder passwordEncoder;
+
     private final AccountRepository accountRepository;
     private final MovementRepository movementRepository;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
 
     @Autowired
-    public AccountController(AccountRepository accountRepository, MovementRepository movementRepository) {
+    public AccountController(PasswordEncoder passwordEncoder, AccountRepository accountRepository, MovementRepository movementRepository, RoleRepository roleRepository, UserRepository userRepository, ClientRepository clientRepository) {
+        this.passwordEncoder = passwordEncoder;
         this.accountRepository = accountRepository;
         this.movementRepository = movementRepository;
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
+        this.clientRepository = clientRepository;
     }
 
     @Secured({Const.ROLE_MANAGER})
     @PostMapping()
     public ResponseEntity save(@RequestBody Account account) {
         try {
+            Role role = roleRepository.findByName(Const.ROLE_CLIENT);
+            if (role == null) {
+                role = new Role(Const.ROLE_CLIENT);
+                role = roleRepository.save(role);
+            }
+            User user = this.userRepository.save(new User(
+                    account.getClient().getName(),
+                    account.getClient().getUser().getEmail(),
+                    passwordEncoder.encode(account.getClient().getUser().getPassword()),
+                    Collections.singletonList(role))
+            );
+            Client client = account.getClient();
+            client.setUser(user);
+            client = clientRepository.save(client);
+
+            account.setClient(client);
             account = this.accountRepository.save(account);
             return ResponseEntity.status(HttpStatus.OK).body(account);
         } catch (Exception e) {

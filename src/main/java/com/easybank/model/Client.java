@@ -14,8 +14,8 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @JoinColumn(name = "user_id")
+    private User user;
     private String name;
     @Column(name = "federal_registration", unique = true)
     private String federalRegistration;
@@ -23,8 +23,9 @@ public class Client {
     public Client() {
     }
 
-    public Client(String name, String federalRegistration) {
+    public Client(User user, String name, String federalRegistration) {
         super();
+        this.user = user;
         this.name = name;
         this.federalRegistration = federalRegistration;
     }
@@ -35,6 +36,14 @@ public class Client {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getName() {
