@@ -1,6 +1,6 @@
 package com.easybank.controller;
 
-import com.easybank.Const;
+import com.easybank.util.Const;
 import com.easybank.model.Bank;
 import com.easybank.repository.BankRepository;
 import org.springframework.beans.factory.annotation.Autowired;

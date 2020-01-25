@@ -1,6 +1,6 @@
 package com.easybank.controller;
 
-import com.easybank.Const;
+import com.easybank.util.Const;
 import com.easybank.enums.MovementType;
 import com.easybank.model.*;
 import com.easybank.repository.AccountRepository;
@@ -12,9 +12,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController

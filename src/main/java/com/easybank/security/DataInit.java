@@ -1,6 +1,6 @@
 package com.easybank.security;
 
-import com.easybank.Const;
+import com.easybank.util.Const;
 import com.easybank.model.User;
 import com.easybank.repository.RoleRepository;
 import com.easybank.repository.UserRepository;
