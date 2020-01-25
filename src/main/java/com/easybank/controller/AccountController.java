@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/account")
@@ -77,7 +78,7 @@ public class AccountController {
     @PutMapping("/deposit")
     public ResponseEntity deposit(@RequestBody Deposit deposit) {
         try {
-            Account account = deposit.getAccount();
+            Account account = accountRepository.getOne(deposit.getAccount().getId());
             account.setBalance(account.getBalance().add(deposit.getAmount()));
             account = accountRepository.save(account);
             movementRepository.save(new Movement(MovementType.DEPOSIT, deposit.getAmount(), null, account));
@@ -91,10 +92,12 @@ public class AccountController {
     @PutMapping("/withdraw")
     public ResponseEntity withdraw(@RequestBody Withdraw withdraw) {
         try {
-            Account account = accountRepository.getOne(withdraw.getAccount().getId());
+            Account account = accountRepository.findById(withdraw.getAccount().getId()).get();
             if (account.getBalance().compareTo(BigDecimal.ZERO) <= 0 || account.getBalance().compareTo(withdraw.getAmount()) < 0) {
                 return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Saldo insuficiente para saque");
             }
+            account.setBalance(account.getBalance().subtract(withdraw.getAmount()));
+            account = accountRepository.save(account);
             movementRepository.save(new Movement(MovementType.WITHDRAW, withdraw.getAmount(), account, null));
             return ResponseEntity.status(HttpStatus.OK).body(account);
         } catch (Exception e) {
@@ -126,8 +129,8 @@ public class AccountController {
     @GetMapping("/extract")
     public ResponseEntity extract(@RequestParam Long id) {
         try {
-            Account account = accountRepository.getOne(id);
-            return ResponseEntity.status(HttpStatus.OK).body(movementRepository.findAllByOriginEqualsOrDestinationEquals(account, account));
+            Optional<Account> account = accountRepository.findById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(movementRepository.findAllByOriginEqualsOrDestinationEquals(account.get(), account.get()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível buscar extrato");
         }

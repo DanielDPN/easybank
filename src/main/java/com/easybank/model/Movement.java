@@ -18,10 +18,10 @@ public class Movement {
     private MovementType type;
     private BigDecimal amount;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "origin_id")
+    @JoinColumn(name = "origin_id")
     private Account origin;
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "destination_id")
+    @JoinColumn(name = "destination_id")
     private Account destination;
 
     public Movement() {
