@@ -20,6 +20,10 @@ public class Bank {
     public Bank() {
     }
 
+    public Bank(Long id) {
+        this.id = id;
+    }
+
     public Bank(String code, String name) {
         super();
         this.code = code;

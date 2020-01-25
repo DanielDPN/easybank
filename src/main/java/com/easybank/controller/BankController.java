@@ -25,36 +25,23 @@ public class BankController {
 
     @Secured({Const.ROLE_MANAGER})
     @PostMapping()
-    public ResponseEntity<Map<String, Object>> save(@RequestBody Bank bank){
-        final Map<String, Object> result = new HashMap<>();
+    public ResponseEntity save(@RequestBody Bank bank){
         try {
             bank = this.bankRepository.save(bank);
-            result.put("success", true);
-            result.put("error", null);
-            result.put("body", bank);
-            return ResponseEntity.status(HttpStatus.OK).body(result);
+            return ResponseEntity.status(HttpStatus.OK).body(bank);
         } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", "Não foi possível criar banco");
-            result.put("body", null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível criar banco");
         }
     }
 
     @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
     @GetMapping()
-    public ResponseEntity<Map<String, Object>> list(){
+    public ResponseEntity list(){
         final Map<String, Object> result = new HashMap<>();
         try {
-            result.put("success", true);
-            result.put("error", null);
-            result.put("body", bankRepository.findAll());
-            return ResponseEntity.status(HttpStatus.OK).body(result);
+            return ResponseEntity.status(HttpStatus.OK).body(bankRepository.findAll());
         } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", "Não foi possível listar bancos");
-            result.put("body", null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível listar bancos");
         }
     }
 
