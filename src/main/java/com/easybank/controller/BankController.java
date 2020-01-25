@@ -1,16 +1,13 @@
 package com.easybank.controller;
 
-import com.easybank.util.Const;
 import com.easybank.model.Bank;
 import com.easybank.repository.BankRepository;
+import com.easybank.util.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/bank")
@@ -37,7 +34,6 @@ public class BankController {
     @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
     @GetMapping()
     public ResponseEntity list(){
-        final Map<String, Object> result = new HashMap<>();
         try {
             return ResponseEntity.status(HttpStatus.OK).body(bankRepository.findAll());
         } catch (Exception e) {

@@ -25,36 +25,22 @@ public class AgencyController {
 
     @Secured({Const.ROLE_MANAGER})
     @PostMapping()
-    public ResponseEntity<Map<String, Object>> save(@RequestBody Agency agency){
-        final Map<String, Object> result = new HashMap<>();
+    public ResponseEntity save(@RequestBody Agency agency){
         try {
             agency = this.agencyRepository.save(agency);
-            result.put("success", true);
-            result.put("error", null);
-            result.put("body", agency);
-            return ResponseEntity.status(HttpStatus.OK).body(result);
+            return ResponseEntity.status(HttpStatus.OK).body(agency);
         } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", "Não foi possível criar agência");
-            result.put("body", null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível criar agência");
         }
     }
 
     @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
     @GetMapping()
-    public ResponseEntity<Map<String, Object>> list(){
-        final Map<String, Object> result = new HashMap<>();
+    public ResponseEntity list(){
         try {
-            result.put("success", true);
-            result.put("error", null);
-            result.put("body", agencyRepository.findAll());
-            return ResponseEntity.status(HttpStatus.OK).body(result);
+            return ResponseEntity.status(HttpStatus.OK).body(agencyRepository.findAll());
         } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", "Não foi possível listar agências");
-            result.put("body", null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível listar agências");
         }
     }
 

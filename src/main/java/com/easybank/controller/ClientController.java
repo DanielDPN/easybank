@@ -1,16 +1,13 @@
 package com.easybank.controller;
 
-import com.easybank.util.Const;
 import com.easybank.model.Client;
 import com.easybank.repository.ClientRepository;
+import com.easybank.util.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/client")
@@ -25,36 +22,22 @@ public class ClientController {
 
     @Secured({Const.ROLE_MANAGER})
     @PostMapping()
-    public ResponseEntity<Map<String, Object>> save(@RequestBody Client client){
-        final Map<String, Object> result = new HashMap<>();
+    public ResponseEntity save(@RequestBody Client client){
         try {
             client = this.clientRepository.save(client);
-            result.put("success", true);
-            result.put("error", null);
-            result.put("body", client);
-            return ResponseEntity.status(HttpStatus.OK).body(result);
+            return ResponseEntity.status(HttpStatus.OK).body(client);
         } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", "Não foi possível criar cliente");
-            result.put("body", null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível criar cliente");
         }
     }
 
     @Secured({Const.ROLE_MANAGER})
     @GetMapping()
-    public ResponseEntity<Map<String, Object>> list(){
-        final Map<String, Object> result = new HashMap<>();
+    public ResponseEntity list(){
         try {
-            result.put("success", true);
-            result.put("error", null);
-            result.put("body", clientRepository.findAll());
-            return ResponseEntity.status(HttpStatus.OK).body(result);
+            return ResponseEntity.status(HttpStatus.OK).body(clientRepository.findAll());
         } catch (Exception e) {
-            result.put("success", false);
-            result.put("error", "Não foi possível listar clientes");
-            result.put("body", null);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível listar clientes");
         }
     }
 
