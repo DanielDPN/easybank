@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class Agency {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "bank_id")

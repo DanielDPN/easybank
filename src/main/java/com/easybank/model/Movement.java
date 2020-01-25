@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 public class Movement {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private MovementType type;
     private BigDecimal amount;

@@ -78,7 +78,7 @@ public class AccountController {
     @PutMapping("/deposit")
     public ResponseEntity deposit(@RequestBody Deposit deposit) {
         try {
-            Account account = accountRepository.getOne(deposit.getAccount().getId());
+            Account account = accountRepository.findById(deposit.getAccount().getId()).get();
             account.setBalance(account.getBalance().add(deposit.getAmount()));
             account = accountRepository.save(account);
             movementRepository.save(new Movement(MovementType.DEPOSIT, deposit.getAmount(), null, account));
@@ -109,8 +109,8 @@ public class AccountController {
     @PutMapping("/transfer")
     public ResponseEntity transfer(@RequestBody Transfer transfer) {
         try {
-            Account destination = transfer.getDestination();
-            Account origin = accountRepository.getOne(transfer.getOrigin().getId());
+            Account destination = accountRepository.findById(transfer.getDestination().getId()).get();
+            Account origin = accountRepository.findById(transfer.getOrigin().getId()).get();
             if (origin.getBalance().compareTo(BigDecimal.ZERO) <= 0 || origin.getBalance().compareTo(transfer.getAmount()) < 0) {
                 return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("Saldo insuficiente para transferência");
             }
@@ -129,8 +129,8 @@ public class AccountController {
     @GetMapping("/extract")
     public ResponseEntity extract(@RequestParam Long id) {
         try {
-            Optional<Account> account = accountRepository.findById(id);
-            return ResponseEntity.status(HttpStatus.OK).body(movementRepository.findAllByOriginEqualsOrDestinationEquals(account.get(), account.get()));
+            Account account = accountRepository.findById(id).get();
+            return ResponseEntity.status(HttpStatus.OK).body(movementRepository.findAllByOriginEqualsOrDestinationEquals(account, account));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível buscar extrato");
         }
