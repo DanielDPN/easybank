@@ -13,7 +13,7 @@ public class Agency {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "bank_id")
     private Bank bank;
     @Column(unique = true)

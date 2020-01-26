@@ -2,6 +2,7 @@ package com.easybank.test;
 
 import com.easybank.Application;
 import com.easybank.model.*;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +23,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -72,8 +75,6 @@ public class ApplicationTest {
                 .andExpect(content().contentType(CONTENT_TYPE));
 
         String resultString = result.andReturn().getResponse().getContentAsString();
-
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
         return jsonParser.parseMap(resultString).get("access_token").toString();
     }
 
@@ -122,16 +123,31 @@ public class ApplicationTest {
     @Test
     public void postAgency() throws Exception {
         final String accessToken = obtainAccessToken(MANAGER_USERNAME, MANAGER_PASSWORD);
-        ResultActions bankResult = mockMvc.perform(get("/bank/1")
+        ResultActions bankResult = mockMvc.perform(get("/bank")
                 .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
 
         String resultString = bankResult.andReturn().getResponse().getContentAsString();
 
-        String id = jsonParser.parseMap(resultString).get("id").toString();
-        Bank bank = new Bank(Long.valueOf(id));
+        List<Bank> banks = mapper.readValue(resultString, new TypeReference<List<Bank>>(){});
 
-        String agencyString = mapper.writeValueAsString(new Agency(bank, "1234", "6"));
+        Bank bank = new Bank();
+
+        if (!banks.isEmpty()) {
+            bank = banks.get(0);
+        } else {
+            String bankString = mapper.writeValueAsString(new Bank("001", "Banco do Brasil S.A"));
+            bankResult =  mockMvc.perform(post("/bank")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(CONTENT_TYPE)
+                    .content(bankString)
+                    .accept(CONTENT_TYPE))
+                    .andExpect(status().isOk());
+            bankString = bankResult.andReturn().getResponse().getContentAsString();
+            bank.setId(Long.parseLong(jsonParser.parseMap(bankString).get("id").toString()));
+        }
+
+        String agencyString = mapper.writeValueAsString(new Agency(bank, "12345", "6"));
         mockMvc.perform(post("/agency")
                 .header("Authorization", "Bearer " + accessToken)
                 .contentType(CONTENT_TYPE)
@@ -195,6 +211,72 @@ public class ApplicationTest {
                 .content(accountString)
                 .accept(CONTENT_TYPE))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deposit() throws Exception {
+        final String accessToken = obtainAccessToken(MANAGER_USERNAME, MANAGER_PASSWORD);
+        ResultActions bankResult = mockMvc.perform(get("/account")
+                .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk());
+
+        String resultString = bankResult.andReturn().getResponse().getContentAsString();
+
+        List<Account> accounts = mapper.readValue(resultString, new TypeReference<List<Account>>(){});
+
+        Account account;
+
+        if (!accounts.isEmpty()) {
+            account = accounts.get(0);
+            Deposit deposit = new Deposit(account, new BigDecimal(50));
+
+            String depositString = mapper.writeValueAsString(deposit);
+            mockMvc.perform(post("/account/deposit")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(CONTENT_TYPE)
+                    .content(depositString)
+                    .accept(CONTENT_TYPE))
+                    .andExpect(status().isOk());
+        }
+    }
+
+    @Test
+    public void withdraw() throws Exception {
+        final String accessToken = obtainAccessToken(MANAGER_USERNAME, MANAGER_PASSWORD);
+        ResultActions bankResult = mockMvc.perform(get("/account")
+                .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk());
+
+        String resultString = bankResult.andReturn().getResponse().getContentAsString();
+
+        List<Account> accounts = mapper.readValue(resultString, new TypeReference<List<Account>>(){});
+
+        Account account;
+
+        if (!accounts.isEmpty()) {
+            account = accounts.get(0);
+
+            BigDecimal amount = account.getBalance().add(new BigDecimal(1));
+
+            Withdraw withdraw = new Withdraw(account, amount);
+
+            String withdrawString = mapper.writeValueAsString(withdraw);
+            mockMvc.perform(post("/account/withdraw")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(CONTENT_TYPE)
+                    .content(withdrawString)
+                    .accept(CONTENT_TYPE))
+                    .andExpect(status().isServiceUnavailable());
+
+            withdraw = new Withdraw(account, account.getBalance());
+            withdrawString = mapper.writeValueAsString(withdraw);
+            mockMvc.perform(post("/account/withdraw")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(CONTENT_TYPE)
+                    .content(withdrawString)
+                    .accept(CONTENT_TYPE))
+                    .andExpect(status().isOk());
+        }
     }
 
 }
