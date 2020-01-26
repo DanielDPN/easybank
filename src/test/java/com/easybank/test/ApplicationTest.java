@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,7 +22,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -129,7 +127,8 @@ public class ApplicationTest {
 
         String resultString = bankResult.andReturn().getResponse().getContentAsString();
 
-        List<Bank> banks = mapper.readValue(resultString, new TypeReference<List<Bank>>(){});
+        List<Bank> banks = mapper.readValue(resultString, new TypeReference<List<Bank>>() {
+        });
 
         Bank bank = new Bank();
 
@@ -137,7 +136,7 @@ public class ApplicationTest {
             bank = banks.get(0);
         } else {
             String bankString = mapper.writeValueAsString(new Bank("001", "Banco do Brasil S.A"));
-            bankResult =  mockMvc.perform(post("/bank")
+            bankResult = mockMvc.perform(post("/bank")
                     .header("Authorization", "Bearer " + accessToken)
                     .contentType(CONTENT_TYPE)
                     .content(bankString)
@@ -211,6 +210,18 @@ public class ApplicationTest {
                 .content(accountString)
                 .accept(CONTENT_TYPE))
                 .andExpect(status().isOk());
+
+        user = new User("Martha", "martha", "123456");
+        client = new Client(user, "Martha Smith", "951.654.678-55");
+        client.setUser(user);
+
+        accountString = mapper.writeValueAsString(new Account(agency, client, "65422", "1", new BigDecimal(50)));
+        mockMvc.perform(post("/account")
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(CONTENT_TYPE)
+                .content(accountString)
+                .accept(CONTENT_TYPE))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -222,7 +233,8 @@ public class ApplicationTest {
 
         String resultString = bankResult.andReturn().getResponse().getContentAsString();
 
-        List<Account> accounts = mapper.readValue(resultString, new TypeReference<List<Account>>(){});
+        List<Account> accounts = mapper.readValue(resultString, new TypeReference<List<Account>>() {
+        });
 
         Account account;
 
@@ -249,7 +261,8 @@ public class ApplicationTest {
 
         String resultString = bankResult.andReturn().getResponse().getContentAsString();
 
-        List<Account> accounts = mapper.readValue(resultString, new TypeReference<List<Account>>(){});
+        List<Account> accounts = mapper.readValue(resultString, new TypeReference<List<Account>>() {
+        });
 
         Account account;
 
@@ -275,6 +288,28 @@ public class ApplicationTest {
                     .contentType(CONTENT_TYPE)
                     .content(withdrawString)
                     .accept(CONTENT_TYPE))
+                    .andExpect(status().isOk());
+        }
+    }
+
+    @Test
+    public void extract() throws Exception {
+        final String accessToken = obtainAccessToken(MANAGER_USERNAME, MANAGER_PASSWORD);
+        ResultActions bankResult = mockMvc.perform(get("/account")
+                .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk());
+
+        String resultString = bankResult.andReturn().getResponse().getContentAsString();
+
+        List<Account> accounts = mapper.readValue(resultString, new TypeReference<List<Account>>() {
+        });
+
+        Account account;
+
+        if (!accounts.isEmpty()) {
+            account = accounts.get(0);
+            mockMvc.perform(get("/account/extract?id=" + account.getId())
+                    .header("Authorization", "Bearer " + accessToken))
                     .andExpect(status().isOk());
         }
     }
