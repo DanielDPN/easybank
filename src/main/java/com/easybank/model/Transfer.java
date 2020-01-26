@@ -8,6 +8,12 @@ public class Transfer {
     private Account destination;
     private BigDecimal amount;
 
+    public Transfer(Account origin, Account destination, BigDecimal amount) {
+        this.origin = origin;
+        this.destination = destination;
+        this.amount = amount;
+    }
+
     public Account getOrigin() {
         return origin;
     }

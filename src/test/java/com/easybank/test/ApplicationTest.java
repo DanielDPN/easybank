@@ -25,8 +25,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -243,7 +242,7 @@ public class ApplicationTest {
             Deposit deposit = new Deposit(account, new BigDecimal(50));
 
             String depositString = mapper.writeValueAsString(deposit);
-            mockMvc.perform(post("/account/deposit")
+            mockMvc.perform(put("/account/deposit")
                     .header("Authorization", "Bearer " + accessToken)
                     .contentType(CONTENT_TYPE)
                     .content(depositString)
@@ -274,7 +273,7 @@ public class ApplicationTest {
             Withdraw withdraw = new Withdraw(account, amount);
 
             String withdrawString = mapper.writeValueAsString(withdraw);
-            mockMvc.perform(post("/account/withdraw")
+            mockMvc.perform(put("/account/withdraw")
                     .header("Authorization", "Bearer " + accessToken)
                     .contentType(CONTENT_TYPE)
                     .content(withdrawString)
@@ -283,7 +282,7 @@ public class ApplicationTest {
 
             withdraw = new Withdraw(account, account.getBalance());
             withdrawString = mapper.writeValueAsString(withdraw);
-            mockMvc.perform(post("/account/withdraw")
+            mockMvc.perform(put("/account/withdraw")
                     .header("Authorization", "Bearer " + accessToken)
                     .contentType(CONTENT_TYPE)
                     .content(withdrawString)
@@ -310,6 +309,48 @@ public class ApplicationTest {
             account = accounts.get(0);
             mockMvc.perform(get("/account/extract?id=" + account.getId())
                     .header("Authorization", "Bearer " + accessToken))
+                    .andExpect(status().isOk());
+        }
+    }
+
+    @Test
+    public void transfer() throws Exception {
+        final String accessToken = obtainAccessToken(MANAGER_USERNAME, MANAGER_PASSWORD);
+        ResultActions bankResult = mockMvc.perform(get("/account")
+                .header("Authorization", "Bearer " + accessToken))
+                .andExpect(status().isOk());
+
+        String resultString = bankResult.andReturn().getResponse().getContentAsString();
+
+        List<Account> accounts = mapper.readValue(resultString, new TypeReference<List<Account>>() {
+        });
+
+        Account origin;
+        Account destination;
+
+        if (!accounts.isEmpty() && accounts.size() > 1) {
+            origin = accounts.get(0);
+            destination = accounts.get(1);
+
+            BigDecimal amount = origin.getBalance().add(new BigDecimal(1));
+
+            Transfer transfer = new Transfer(origin, destination, amount);
+
+            String transferString = mapper.writeValueAsString(transfer);
+            mockMvc.perform(put("/account/transfer")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(CONTENT_TYPE)
+                    .content(transferString)
+                    .accept(CONTENT_TYPE))
+                    .andExpect(status().isServiceUnavailable());
+
+            transfer = new Transfer(origin, destination, origin.getBalance());
+            transferString = mapper.writeValueAsString(transfer);
+            mockMvc.perform(put("/account/transfer")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .contentType(CONTENT_TYPE)
+                    .content(transferString)
+                    .accept(CONTENT_TYPE))
                     .andExpect(status().isOk());
         }
     }

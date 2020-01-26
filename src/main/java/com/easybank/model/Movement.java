@@ -1,6 +1,7 @@
 package com.easybank.model;
 
 import com.easybank.enums.MovementType;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Movement {
 
     @Id
