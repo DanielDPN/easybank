@@ -53,14 +53,15 @@ form-data
 POST http://localhost:8080/bank
 ```
 
-## Headers
-#### Utilizando o access_token obtido anteriormente
+### Headers
+Utilizando o access_token obtido anteriormente
+
 | Key | Value |
 | :--- | :--- |
 | `Authorization` | **Bearer 0e3f277f-4378-4bd3-b3cd-9c8929f416e4** |
 | `Content-Type` | **application/json** |
 
-## Body
+### Body
 row JSON(application/json)
 ```
 {
@@ -83,8 +84,9 @@ row JSON(application/json)
 GET http://localhost:8080/bank
 ```
 
-## Headers
-#### Utilizando o access_token obtido anteriormente
+### Headers
+Utilizando o access_token obtido anteriormente
+
 | Key | Value |
 | :--- | :--- |
 | `Authorization` | **Bearer 0e3f277f-4378-4bd3-b3cd-9c8929f416e4** |
@@ -106,14 +108,15 @@ GET http://localhost:8080/bank
 POST http://localhost:8080/agency
 ```
 
-## Headers
-#### Utilizando o access_token obtido anteriormente
+### Headers
+Utilizando o access_token obtido anteriormente
+
 | Key | Value |
 | :--- | :--- |
 | `Authorization` | **Bearer 0e3f277f-4378-4bd3-b3cd-9c8929f416e4** |
 | `Content-Type` | **application/json** |
 
-## Body
+### Body
 row JSON(application/json)
 ```
 {
@@ -146,8 +149,9 @@ row JSON(application/json)
 GET http://localhost:8080/agency
 ```
 
-## Headers
-#### Utilizando o access_token obtido anteriormente
+### Headers
+Utilizando o access_token obtido anteriormente
+
 | Key | Value |
 | :--- | :--- |
 | `Authorization` | **Bearer 0e3f277f-4378-4bd3-b3cd-9c8929f416e4** |
@@ -174,14 +178,15 @@ GET http://localhost:8080/agency
 POST http://localhost:8080/account
 ```
 
-## Headers
-#### Utilizando o access_token obtido anteriormente
+### Headers
+Utilizando o access_token obtido anteriormente
+
 | Key | Value |
 | :--- | :--- |
 | `Authorization` | **Bearer 0e3f277f-4378-4bd3-b3cd-9c8929f416e4** |
 | `Content-Type` | **application/json** |
 
-## Body
+### Body
 row JSON(application/json)
 ```
 {
@@ -253,8 +258,9 @@ row JSON(application/json)
 GET http://localhost:8080/account
 ```
 
-## Headers
-#### Utilizando o access_token obtido anteriormente
+### Headers
+Utilizando o access_token obtido anteriormente
+
 | Key | Value |
 | :--- | :--- |
 | `Authorization` | **Bearer 0e3f277f-4378-4bd3-b3cd-9c8929f416e4** |
@@ -305,14 +311,15 @@ GET http://localhost:8080/account
 PUT http://localhost:8080/account/deposit
 ```
 
-## Headers
-#### Utilizando o access_token obtido anteriormente
+### Headers
+Utilizando o access_token obtido anteriormente
+
 | Key | Value |
 | :--- | :--- |
 | `Authorization` | **Bearer 0e3f277f-4378-4bd3-b3cd-9c8929f416e4** |
 | `Content-Type` | **application/json** |
 
-## Body
+### Body
 row JSON(application/json)
 ```
 {
@@ -366,14 +373,15 @@ row JSON(application/json)
 PUT http://localhost:8080/account/withdraw
 ```
 
-## Headers
-#### Utilizando o access_token obtido anteriormente
+### Headers
+Utilizando o access_token obtido anteriormente
+
 | Key | Value |
 | :--- | :--- |
 | `Authorization` | **Bearer 0e3f277f-4378-4bd3-b3cd-9c8929f416e4** |
 | `Content-Type` | **application/json** |
 
-## Body
+### Body
 row JSON(application/json)
 ```
 {
@@ -427,14 +435,15 @@ row JSON(application/json)
 PUT http://localhost:8080/account/transfer
 ```
 
-## Headers
-#### Utilizando o access_token obtido anteriormente
+### Headers
+Utilizando o access_token obtido anteriormente
+
 | Key | Value |
 | :--- | :--- |
 | `Authorization` | **Bearer 0e3f277f-4378-4bd3-b3cd-9c8929f416e4** |
 | `Content-Type` | **application/json** |
 
-## Body
+### Body
 row JSON(application/json)
 ```
 {
@@ -491,8 +500,9 @@ row JSON(application/json)
 GET http://localhost:8080/account/extract?id=1
 ```
 
-## Headers
-#### Utilizando o access_token obtido anteriormente
+### Headers
+Utilizando o access_token obtido anteriormente
+
 | Key | Value |
 | :--- | :--- |
 | `Authorization` | **Bearer 0e3f277f-4378-4bd3-b3cd-9c8929f416e4** |
