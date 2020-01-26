@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebAppConfiguration
 @SpringBootTest(classes = Application.class)
 @ActiveProfiles("mvc")
-public class CaseTest {
+public class ApplicationTest {
 
     @Autowired
     private WebApplicationContext wac;
@@ -41,6 +41,7 @@ public class CaseTest {
     private FilterChainProxy springSecurityFilterChain;
 
     private MockMvc mockMvc;
+    private ObjectMapper mapper = new ObjectMapper();
 
     private static final String CLIENT_ID = "easy-bank";
     private static final String CLIENT_SECRET = "easy-bank";
@@ -101,7 +102,6 @@ public class CaseTest {
     @Test
     public void postBank() throws Exception {
         final String accessToken = obtainAccessToken(MANAGER_USERNAME, MANAGER_PASSWORD);
-        ObjectMapper mapper = new ObjectMapper();
         String bankString = mapper.writeValueAsString(new Bank("001", "Banco do Brasil S.A"));
         mockMvc.perform(post("/bank")
                 .header("Authorization", "Bearer " + accessToken)
@@ -122,8 +122,7 @@ public class CaseTest {
     @Test
     public void postAgency() throws Exception {
         final String accessToken = obtainAccessToken(MANAGER_USERNAME, MANAGER_PASSWORD);
-        ObjectMapper mapper = new ObjectMapper();
-        String bankString = mapper.writeValueAsString(new Bank("001", "Banco do Brasil S.A"));
+        String bankString = mapper.writeValueAsString(new Bank("033", "Banco Santander (Brasil) S.A"));
         ResultActions bankResult = mockMvc.perform(post("/bank")
                 .header("Authorization", "Bearer " + accessToken)
                 .contentType(CONTENT_TYPE)
@@ -143,6 +142,14 @@ public class CaseTest {
                 .contentType(CONTENT_TYPE)
                 .content(agencyString)
                 .accept(CONTENT_TYPE))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getClients() throws Exception {
+        final String accessToken = obtainAccessToken(MANAGER_USERNAME, MANAGER_PASSWORD);
+        mockMvc.perform(get("/client")
+                .header("Authorization", "Bearer " + accessToken))
                 .andExpect(status().isOk());
     }
 
