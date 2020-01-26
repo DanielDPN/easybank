@@ -23,6 +23,10 @@ public class Agency {
     public Agency() {
     }
 
+    public Agency(Long id) {
+        this.id = id;
+    }
+
     public Agency(Bank bank, String number, String digit) {
         super();
         this.bank = bank;

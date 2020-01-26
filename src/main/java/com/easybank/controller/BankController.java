@@ -32,6 +32,16 @@ public class BankController {
     }
 
     @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
+    @GetMapping("/{id}")
+    public ResponseEntity getBank(@PathVariable Long id){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(bankRepository.findById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível buscar o banco");
+        }
+    }
+
+    @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
     @GetMapping()
     public ResponseEntity list(){
         try {

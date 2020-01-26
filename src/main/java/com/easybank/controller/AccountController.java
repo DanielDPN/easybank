@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/account")
@@ -61,6 +60,16 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.OK).body(account);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível criar conta");
+        }
+    }
+
+    @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
+    @GetMapping("/{id}")
+    public ResponseEntity getAccount(@PathVariable Long id){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(accountRepository.findById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível buscar a conta");
         }
     }
 

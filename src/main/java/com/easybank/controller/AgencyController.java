@@ -1,16 +1,13 @@
 package com.easybank.controller;
 
-import com.easybank.util.Const;
 import com.easybank.model.Agency;
 import com.easybank.repository.AgencyRepository;
+import com.easybank.util.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/agency")
@@ -31,6 +28,16 @@ public class AgencyController {
             return ResponseEntity.status(HttpStatus.OK).body(agency);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível criar agência");
+        }
+    }
+
+    @Secured({Const.ROLE_CLIENT, Const.ROLE_MANAGER})
+    @GetMapping("/{id}")
+    public ResponseEntity getAgency(@PathVariable Long id){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(agencyRepository.findById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Não foi possível buscar a agência");
         }
     }
 
